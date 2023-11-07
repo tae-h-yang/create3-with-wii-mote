@@ -1,4 +1,5 @@
 import cwiid
+import time
 
 def connect_to_wiimote():
     try:
@@ -15,15 +16,20 @@ wiimote = connect_to_wiimote()
 
 if wiimote:
     while True:
+        time.sleep(0.5)
         try:
             state = wiimote.state
-            if 'nunchuk' in state:
-                nunchuk_state = state['nunchuk']
-                # Read nunchuck data
-                stick = nunchuk_state['stick']
-                buttons = nunchuk_state['buttons']
-                print("Nunchuck Stick:", stick)
-                print("Nunchuck Buttons:", buttons)
+            # if 'nunchuk' in state:
+            #     nunchuk_state = state['nunchuk']
+            #     # Read nunchuck data
+            #     stick = nunchuk_state['stick']
+            #     buttons = nunchuk_state['buttons']
+            #     print("Nunchuck Stick:", stick)
+            #     print("Nunchuck Buttons:", buttons)
+            print(state)
+            if state['nunchuk']['buttons'] == 1:
+                wiimote = None
+                break
         except RuntimeError:
             print("Connection to Wiimote interrupted.")
             break

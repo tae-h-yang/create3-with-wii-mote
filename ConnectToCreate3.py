@@ -9,7 +9,11 @@ from irobot_edu_sdk.backend.bluetooth import Bluetooth
 from irobot_edu_sdk.robots import event, hand_over, Color, Robot, Root, Create3
 # from bluetooth import Bluetooth
 # from robots import event, hand_over, Color, Robot, Root, Create3
-create3_name = "iRobot-394CB78AD5364AAF93E145"
+
+# On Windows
+# create3_name = "iRobot-394CB78AD5364AAF93E145"
+# On Ubuntu
+create3_name = "iRobotCreate3"
 robot = Create3(Bluetooth(name=create3_name))
 
 @event(robot.when_play)
