@@ -265,9 +265,67 @@ def joy_to_diff_drive3(x, y, minJoystick, maxJoystick, minSpeed, maxSpeed):
 def map(x,y):
       return
 
-def joy_to_diff_drive(x, y):
-     
-     return vl, vr
+def joy_to_diff_drive(x, y, maxSpeed = 30):
+    vl, vr = 0, 0
+    # print(x,y)
+    # Normalize joystick inputs between -1 to 1
+    x = (x-33)/(228-33)*2 - 1
+    y = (y-27)/(223-27)*2 - 1
+
+    # Check if joystick is at deadzone.
+    if -0.5 < x < 0.5 and -0.5 < y < 0.5:
+          return (vl, vr)
+    
+    # Calculate angle of joystick ranging from -180 to 180 degrees while 0 indicating north and both -180 and 180 indicating south.
+    angle = math.atan2(x,y)/math.pi*180
+
+    if 0 < angle <= 100:
+          vl = maxSpeed
+          vr = -2*maxSpeed/90 * angle + maxSpeed
+          return (vl, vr)
+    if angle > 100:
+          vl = -maxSpeed
+          vr = -maxSpeed/80 * (angle - 100)
+          return (vl, vr)
+    if -100 < angle <= 0:
+          vl = 2*maxSpeed/90 * angle + maxSpeed
+          vr = maxSpeed
+          return (vl, vr)
+    if angle < -100:
+          vl = -maxSpeed/80 * (angle - 100)
+          vr = -maxSpeed
+          return (vl, vr)
+
+    # if -22.5 < angle <= 22.5:
+    #       vl, vr = maxSpeed, maxSpeed
+    #       return (vl, vr)
+    # if 22.5 < angle <= 67.5:
+    #       vl, vr = maxSpeed, 0
+    #       return (vl, vr)
+    # if 67.5 < angle <= 112.5:
+    #       vl, vr = maxSpeed, -maxSpeed
+    #       return (vl, vr)
+    # if 112.5 < angle <= 157.5:
+    #       vl, vr = -maxSpeed, 0
+    #       return (vl, vr)
+    # if 157.5 < angle:
+    #       vl, vr = -maxSpeed, -maxSpeed
+    #       return (vl, vr)
+    # if -67.5 < angle <= -22.5:
+    #       vl, vr = 0, maxSpeed
+    #       return (vl, vr)
+    # if -112.5 < angle <= -67.5:
+    #       vl, vr = -maxSpeed, maxSpeed
+    #       return (vl, vr)
+    # if -157.5 < angle <= 112.5:
+    #       vl, vr = 0, -maxSpeed
+    #       return (vl, vr)
+    # if -157.5 >= angle:
+    #       vl, vr = -maxSpeed, -maxSpeed
+    #       return (vl, vr)
+
+    # print(angle)
+    return (vl, vr)
 
 def connect_to_wiimote():
     try:
@@ -314,9 +372,10 @@ async def play(robot):
         joystick = state['nunchuk']['stick']
         joystick_x = joystick[0]
         joystick_y = joystick[1]
+        # cross = state['buttons']
 
         # [vl,vr] = joy_to_diff_drive(joystick_x, joystick_y)
-        vl,vr = 0, 0
+        # vl,vr = 0, 0
         # [vl,vr] = joy_to_diff_drive3(wiimote.,joy.joystick_left_y.value,-1,1,-robot_speed,robot_speed)
 
         # if(joy.button_dpad_y_axis.value == 1):
@@ -336,12 +395,13 @@ async def play(robot):
         #     vr = robot_speed
 
         # testing nunchuk control
-        if joystick_y > 150:
-              vl, vr = 30, 30
-        elif joystick_y > 100:
-              vl, vr = 0, 0
-        elif joystick_y > 25:
-              vl, vr = -30, -30
+        # if joystick_y > 150:
+        #       vl, vr = 30, 30
+        # elif joystick_y > 100:
+        #       vl, vr = 0, 0
+        # elif joystick_y > 25:
+        #       vl, vr = -30, -30
+        (vl, vr) = joy_to_diff_drive(joystick_x,joystick_y, robot_speed)
 
         await robot.set_wheel_speeds(vl, vr)
                
