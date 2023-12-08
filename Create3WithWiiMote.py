@@ -348,7 +348,7 @@ async def play(robot):
     print('starting event trigger')
     # await play_one_up_tune()
     running = True
-    robot_speed = 30
+    robot_speed = 46
 
     while running:
         
