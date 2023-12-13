@@ -394,6 +394,7 @@ def connect_to_wiimote():
 wiimote = connect_to_wiimote()
 
 create3_name = "iRobotCreate3"
+# create3_name = "iRobot-394CB78AD5364AAF93E145B69E698804"
 robot = Create3(Bluetooth(name=create3_name))
 
 @event(robot.when_play)
@@ -426,6 +427,7 @@ async def play(robot):
         joystick_x = joystick[0]
         joystick_y = joystick[1]
         buttons = state['buttons']
+        print(state)
 
         # cross = state['buttons']
 
@@ -457,7 +459,9 @@ async def play(robot):
         # elif joystick_y > 25:
         #       vl, vr = -30, -30
         (vl, vr) = joy_to_diff_drive(joystick_x,joystick_y, robot_speed, buttons)
-
+        print(vl, vr)
+        # time.sleep(0.1)
+        robot._disable_motors = False
         await robot.set_wheel_speeds(vl, vr)
                
     sys.exit(0) 
